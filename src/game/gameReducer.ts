@@ -29,6 +29,8 @@ export function createInitialState(highScore = 0, settings: Settings = DEFAULT_S
     goldenHits: 0,
     bombHits: 0,
     specialHits: 0,
+    timeHits: 0,
+    shieldHits: 0,
     multiplierUntil: 0,
     recentHoles: [],
     lastEffect: null,
@@ -68,6 +70,8 @@ function resetRound(state: GameState, timeRemaining: number): GameState {
     goldenHits: 0,
     bombHits: 0,
     specialHits: 0,
+    timeHits: 0,
+    shieldHits: 0,
     multiplierUntil: 0,
     recentHoles: [],
     lastEffect: null,
@@ -118,8 +122,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       const multiplierActive = state.multiplierUntil > action.now;
       const result = calculateHitScore(target.type, state.combo, multiplierActive);
       const isBomb = target.type === "bomb";
-      const multiplierUntil = !isBomb && result.multiplierActive ? action.now + 3500 : isBomb ? 0 : state.multiplierUntil;
-      const label = isBomb ? "-20" : target.type === "time" ? `+${result.points} · +5秒` : `+${result.points}`;
+      const doubleActivated = target.type === "shield";
+      const multiplierUntil = !isBomb && (result.multiplierActive || doubleActivated) ? action.now + 3500 : isBomb ? 0 : state.multiplierUntil;
+      const label = isBomb ? "-20" : target.type === "time" ? `+${result.points} · +5秒` : doubleActivated ? `+${result.points} · DOUBLE` : `+${result.points}`;
 
       return {
         ...state,
@@ -132,7 +137,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         misses: isBomb ? state.misses + 1 : state.misses,
         goldenHits: target.type === "golden" ? state.goldenHits + 1 : state.goldenHits,
         bombHits: isBomb ? state.bombHits + 1 : state.bombHits,
-        specialHits: target.type !== "normal" ? state.specialHits + 1 : state.specialHits,
+        specialHits: target.type !== "normal" && target.type !== "bomb" ? state.specialHits + 1 : state.specialHits,
+        timeHits: target.type === "time" ? state.timeHits + 1 : state.timeHits,
+        shieldHits: target.type === "shield" ? state.shieldHits + 1 : state.shieldHits,
         multiplierUntil,
         shakeId: isBomb ? state.shakeId + 1 : state.shakeId,
         lastEffect: state.effectsEnabled ? { id: action.now, hole: target.hole, type: effectTypeFor(target.type, result.nextCombo), label } : null,

@@ -1,5 +1,5 @@
 import homeButton from "../assets/images/button_home.png";
-import { getLevelGoalLabel, LEVELS } from "../game/levels";
+import { getLevelPassLabel, LEVELS } from "../game/levels";
 import type { LevelProgress } from "../game/gameTypes";
 
 interface LevelSelectScreenProps {
@@ -35,7 +35,7 @@ export function LevelSelectScreen({ progress, onHome, onSelect }: LevelSelectScr
             >
               <span className="level-card__number">LEVEL {level.id}</span>
               <strong>{unlocked ? level.name : "尚未解鎖"}</strong>
-              <small>{unlocked ? getLevelGoalLabel(level) : "🔒 完成前一關解鎖"}</small>
+              <small>{unlocked ? getLevelPassLabel(level) : "🔒 完成前一關解鎖"}</small>
               <span className="level-card__meta">
                 <em>{stars(record.stars)}</em>
                 <b>最高 {record.highScore}</b>

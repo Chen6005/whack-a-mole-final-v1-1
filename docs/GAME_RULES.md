@@ -18,7 +18,7 @@ Tap or click moles before they disappear.
 | Golden Mole | +30 points |
 | Time Mole | +5 seconds and +5 points |
 | Bomb Mole | -20 points and breaks combo |
-| Shield Mole | Requires 2 hits, then +25 points |
+| Double Armor Mole | Requires 2 hits, then +25 points and a short 2x score window |
 
 ## Combo
 
@@ -35,12 +35,13 @@ The game ends when the timer reaches zero.
 
 ## Garden Journey Levels
 
-The original arcade modes remain available. Garden Journey adds 30 sequential levels with:
+The original arcade modes remain available. Garden Journey adds 10 sequential formal challenges with:
 
 - score, hit-count, Combo, no-bomb, golden-mole and special-target goals
 - level-specific timer, speed and target probability tuning
-- boss challenge levels every five stages
+- pre-level mission briefing with pass and star requirements
+- boss score challenges at Level 5 and Level 10
 - one-to-three-star completion ratings
 - sequential unlocking and per-level high scores saved locally
 
-Level speed tuning layers on top of the original in-round acceleration. It does not replace the easy, medium, hard and frenzy phases.
+Level speed tuning layers on top of the original in-round acceleration. It does not replace the easy, medium, hard and frenzy phases. Double armor moles keep the existing two-hit requirement: the first hit removes armor, while the second hit completes the target and activates a short double-score window.

@@ -20,16 +20,16 @@ Pause stops both schedules. Resume shifts active-target expiry timestamps by the
 ## Game Logic
 
 - `gameConfig.ts`: mode durations, points and progressive difficulty
-- `levels.ts`: 30 level configurations, goal evaluation, star rating and progression updates
+- `levels.ts`: 10 formal challenge configurations, goal evaluation, star rating and progression updates
 - `spawnLogic.ts`: target probabilities, unique-hole selection and multi-spawn rules
 - `scoring.ts`: scoring, combo bonus, multiplier, accuracy, rank and high-score helpers
 - `storage.ts`: Local Storage persistence for high score and settings
 
 ## Level Layer
 
-Level mode is an additional path beside the original arcade modes. A level supplies duration, goal, score target, initial speed multiplier, special-target multiplier and bomb multiplier. `getDifficulty()` still applies the original easy-to-frenzy in-round curve, then layers the selected level multiplier on top.
+Level mode is an additional path beside the original arcade modes. A level supplies duration, goal, score thresholds, initial speed multiplier, special-target multiplier, bomb multiplier and mission hint. `getDifficulty()` still applies the original easy-to-frenzy in-round curve, then layers the selected level multiplier on top.
 
-Local Storage saves the highest unlocked level, best star rating and high score per level.
+Local Storage saves a versioned progression record with the highest unlocked level, best star rating and high score per level. Selecting an unlocked level opens a mission briefing before gameplay begins.
 
 ## Presentation
 

@@ -30,6 +30,8 @@ describe("game reducer", () => {
     expect(first.activeHoles[0].hp).toBe(1);
     expect(second.score).toBe(25);
     expect(second.activeHoles).toHaveLength(0);
+    expect(second.multiplierUntil).toBe(4600);
+    expect(second.shieldHits).toBe(1);
   });
 
   it("starts a configured level without replacing arcade mode", () => {

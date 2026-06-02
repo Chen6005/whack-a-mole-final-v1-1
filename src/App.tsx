@@ -1,12 +1,13 @@
 import { useEffect, useReducer, useRef, useState } from "react";
 import { GameScreen } from "./components/GameScreen";
 import { HomeScreen } from "./components/HomeScreen";
+import { LevelBriefingOverlay } from "./components/LevelBriefingOverlay";
 import { LevelSelectScreen } from "./components/LevelSelectScreen";
 import { ResultScreen } from "./components/ResultScreen";
 import { RulesScreen } from "./components/RulesScreen";
 import { SettingsPanel } from "./components/SettingsPanel";
 import { createInitialState, gameReducer } from "./game/gameReducer";
-import { updateLevelProgress } from "./game/levels";
+import { getLevel, updateLevelProgress } from "./game/levels";
 import { loadHighScore, loadLevelProgress, loadSettings, saveHighScore, saveLevelProgress, saveSettings } from "./game/storage";
 import type { ActiveTarget, GameMode, Settings } from "./game/gameTypes";
 import { useGameLoop } from "./hooks/useGameLoop";
@@ -19,6 +20,7 @@ import "./styles/animations.css";
 export default function App() {
   const [state, dispatch] = useReducer(gameReducer, undefined, () => createInitialState(loadHighScore(), loadSettings()));
   const [levelProgress, setLevelProgress] = useState(loadLevelProgress);
+  const [briefingLevelId, setBriefingLevelId] = useState<number | null>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const processedLevelResult = useRef<string | null>(null);
   const playSound = useSound(state.soundEnabled);
@@ -48,6 +50,15 @@ export default function App() {
     processedLevelResult.current = null;
     playSound("start");
     dispatch({ type: "START_LEVEL", levelId, now: Date.now() });
+  };
+  const openLevelBriefing = (levelId: number) => {
+    if (levelId <= levelProgress.unlockedLevel) setBriefingLevelId(levelId);
+  };
+  const confirmLevel = () => {
+    if (briefingLevelId === null) return;
+    const levelId = briefingLevelId;
+    setBriefingLevelId(null);
+    startLevel(levelId);
   };
   const restart = () => state.playMode === "level" && state.levelId ? startLevel(state.levelId) : startArcade();
 
@@ -83,11 +94,12 @@ export default function App() {
     <div className="app-shell">
       {state.screen === "home" && <HomeScreen mode={state.mode} highScore={state.highScore} onModeChange={setMode} onStart={startArcade} onLevels={() => dispatch({ type: "SET_SCREEN", screen: "levels" })} onRules={() => dispatch({ type: "SET_SCREEN", screen: "rules" })} />}
       {state.screen === "rules" && <RulesScreen onHome={home} />}
-      {state.screen === "levels" && <LevelSelectScreen progress={levelProgress} onHome={home} onSelect={startLevel} />}
+      {state.screen === "levels" && <LevelSelectScreen progress={levelProgress} onHome={home} onSelect={openLevelBriefing} />}
       {state.screen === "game" && <GameScreen state={state} onHit={hit} onMiss={miss} onPause={() => dispatch({ type: "PAUSE", now: Date.now() })} onResume={() => dispatch({ type: "RESUME", now: Date.now() })} onRestart={restart} onHome={home} />}
-      {state.screen === "result" && <ResultScreen state={state} onRestart={restart} onHome={home} onLevels={() => dispatch({ type: "SET_SCREEN", screen: "levels" })} onNextLevel={startLevel} onModeChange={setMode} />}
+      {state.screen === "result" && <ResultScreen state={state} onRestart={restart} onHome={home} onLevels={() => dispatch({ type: "SET_SCREEN", screen: "levels" })} onNextLevel={openLevelBriefing} onModeChange={setMode} />}
       <button className="settings-button" type="button" onClick={() => setSettingsOpen(true)} aria-label="開啟設定">⚙</button>
       {settingsOpen && <SettingsPanel settings={state} onChange={updateSettings} onClose={() => setSettingsOpen(false)} />}
+      {briefingLevelId !== null && getLevel(briefingLevelId) && <LevelBriefingOverlay level={getLevel(briefingLevelId)!} onCancel={() => setBriefingLevelId(null)} onStart={confirmLevel} />}
     </div>
   );
 }

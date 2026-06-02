@@ -1,7 +1,7 @@
 import pauseButton from "../assets/images/button_pause.png";
 import comboBadge from "../assets/images/combo_badge.png";
 import { getDifficulty } from "../game/gameConfig";
-import { getLevel, getLevelGoalLabel } from "../game/levels";
+import { getLevel, getLevelPassLabel } from "../game/levels";
 import { calculateAccuracy } from "../game/scoring";
 import type { ActiveTarget, GameState } from "../game/gameTypes";
 import { GameBoard } from "./GameBoard";
@@ -40,7 +40,7 @@ export function GameScreen({ state, onHit, onMiss, onPause, onResume, onRestart,
           <span className={`difficulty difficulty--${difficulty.level}`}>{difficulty.level}</span>
         </div>
       </section>
-      {levelConfig && <div className="level-objective"><strong>LV.{levelConfig.id} {levelConfig.name}</strong><span>{getLevelGoalLabel(levelConfig)}</span></div>}
+      {levelConfig && <div className="level-objective"><strong>LV.{levelConfig.id} {levelConfig.name}</strong><span>{getLevelPassLabel(levelConfig)}</span></div>}
       <div className={`combo-ribbon ${state.combo >= 3 ? "is-hot" : ""}`}>
         <img src={comboBadge} alt="" />
         <strong>COMBO {state.combo}</strong>

@@ -29,7 +29,9 @@ export function saveSettings(settings: Settings): void {
 
 export function loadLevelProgress(): LevelProgress {
   try {
-    return { ...createDefaultLevelProgress(), ...JSON.parse(window.localStorage.getItem(LEVEL_PROGRESS_KEY) ?? "{}") };
+    const stored = JSON.parse(window.localStorage.getItem(LEVEL_PROGRESS_KEY) ?? "{}") as Partial<LevelProgress>;
+    if (stored.version !== 2) return createDefaultLevelProgress();
+    return { ...createDefaultLevelProgress(), ...stored };
   } catch {
     return createDefaultLevelProgress();
   }

@@ -4,7 +4,7 @@ export type TargetType = "normal" | "golden" | "time" | "bomb" | "shield";
 export type Difficulty = "easy" | "medium" | "hard" | "frenzy";
 export type EffectType = "hit" | "golden" | "time" | "bomb" | "combo";
 export type PlayMode = "arcade" | "level";
-export type LevelGoalType = "score" | "hits" | "combo" | "noBomb" | "golden" | "special";
+export type LevelGoalType = "score" | "combo" | "golden" | "time" | "double" | "special";
 
 export interface ActiveTarget {
   id: number;
@@ -34,11 +34,14 @@ export interface LevelConfig {
   goalType: LevelGoalType;
   goalValue: number;
   targetScore: number;
+  star2Score: number;
+  star3Score: number;
   speedMultiplier: number;
   specialMultiplier: number;
   bombMultiplier: number;
   comboRequirement: number;
   isBoss: boolean;
+  hint: string;
 }
 
 export interface LevelResult {
@@ -54,6 +57,7 @@ export interface LevelRecord {
 }
 
 export interface LevelProgress {
+  version: number;
   unlockedLevel: number;
   records: Record<number, LevelRecord>;
 }
@@ -77,6 +81,8 @@ export interface GameState extends Settings {
   goldenHits: number;
   bombHits: number;
   specialHits: number;
+  timeHits: number;
+  shieldHits: number;
   multiplierUntil: number;
   recentHoles: number[];
   lastEffect: HitEffect | null;

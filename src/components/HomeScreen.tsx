@@ -41,7 +41,7 @@ export function HomeScreen({ mode, highScore, onModeChange, onStart, onLevels, o
           開始遊戲
         </button>
         <button className="level-entry-button" type="button" onClick={onLevels}>
-          <span>🗺</span> 關卡挑戰 <small>30 LEVELS</small>
+          <span>🗺</span> 關卡挑戰 <small>10 LEVELS</small>
         </button>
         <button className="asset-button asset-button--secondary" style={{ backgroundImage: `url(${rulesButton})` }} type="button" onClick={onRules}>
           遊戲規則

@@ -4,10 +4,11 @@ import { createInitialState } from "../game/gameReducer";
 import { evaluateLevel, getLevel, LEVELS, updateLevelProgress } from "../game/levels";
 
 describe("level system", () => {
-  it("defines 30 distinct levels including boss challenges", () => {
-    expect(LEVELS).toHaveLength(30);
-    expect(new Set(LEVELS.map((level) => level.id)).size).toBe(30);
-    expect(LEVELS.filter((level) => level.isBoss).length).toBeGreaterThanOrEqual(5);
+  it("defines 10 distinct formal challenge levels including bosses", () => {
+    expect(LEVELS).toHaveLength(10);
+    expect(new Set(LEVELS.map((level) => level.id)).size).toBe(10);
+    expect(LEVELS.filter((level) => level.isBoss).map((level) => level.id)).toEqual([5, 10]);
+    expect(LEVELS.every((level, index) => index === 0 || level.speedMultiplier > LEVELS[index - 1].speedMultiplier)).toBe(true);
   });
 
   it("keeps progressive in-round speed growth on top of level tuning", () => {
@@ -23,26 +24,30 @@ describe("level system", () => {
   it("passes score goals and awards one to three stars", () => {
     const config = getLevel(1)!;
     const state = createInitialState();
-    state.score = 130;
+    state.score = 400;
     state.hits = 10;
     state.misses = 1;
     state.maxCombo = 5;
-    expect(evaluateLevel(config, state)).toEqual({ levelId: 1, passed: true, stars: 3, goalProgress: 130 });
+    expect(evaluateLevel(config, state)).toEqual({ levelId: 1, passed: true, stars: 3, goalProgress: 400 });
   });
 
-  it("does not pass no-bomb challenges after a bomb hit", () => {
-    const config = getLevel(5)!;
+  it("requires the basic score alongside a special target goal", () => {
+    const config = getLevel(3)!;
     const state = createInitialState();
-    state.score = 300;
-    state.maxCombo = 5;
-    state.bombHits = 1;
+    state.score = 100;
+    state.goldenHits = 2;
     expect(evaluateLevel(config, state).passed).toBe(false);
   });
 
   it("unlocks only the next level and preserves best records", () => {
-    const progress = updateLevelProgress({ unlockedLevel: 1, records: {} }, { levelId: 1, passed: true, stars: 2, goalProgress: 80 }, 80);
+    const progress = updateLevelProgress({ version: 2, unlockedLevel: 1, records: {} }, { levelId: 1, passed: true, stars: 2, goalProgress: 280 }, 280);
     const replay = updateLevelProgress(progress, { levelId: 1, passed: true, stars: 1, goalProgress: 70 }, 70);
     expect(replay.unlockedLevel).toBe(2);
-    expect(replay.records[1]).toEqual({ stars: 2, highScore: 80 });
+    expect(replay.records[1]).toEqual({ stars: 2, highScore: 280 });
+  });
+
+  it("does not unlock the next level after a failed challenge", () => {
+    const progress = updateLevelProgress({ version: 2, unlockedLevel: 1, records: {} }, { levelId: 1, passed: false, stars: 0, goalProgress: 50 }, 50);
+    expect(progress.unlockedLevel).toBe(1);
   });
 });

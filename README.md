@@ -5,10 +5,10 @@ A complete mobile-first garden arcade game built with React, TypeScript and Vite
 ## Features
 
 - Quick (30s), Challenge (45s) and Normal (60s) modes
-- Normal, golden, time, bomb and two-hit shield moles
+- Normal, golden, time, bomb and two-hit Double armor moles
 - Combo bonuses, temporary 2x multiplier and progressive difficulty
 - Pause, restart, home, rules, settings and result flows
-- 30-level Garden Journey with unlock progression, goals, stars and per-level high scores
+- 10-level Garden Journey with mission briefings, unlock progression, stars and per-level high scores
 - Synthesized sound effects, reduced-motion support and persistent high score
 - 28 local Image 2 assets with no external image hotlinks
 
