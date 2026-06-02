@@ -33,7 +33,6 @@ Verify the production URL after each release:
 
 - GitHub: https://github.com/Chen6005/whack-a-mole-final-v1-1
 - Production: https://whackamolefinalcodexpackage.vercel.app
-- Deployment ID: `dpl_B2X64V4EtTXFwXfWqVodJVKpB4uy`
 - Status: `READY`
 
 Verified on production:
