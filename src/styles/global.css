@@ -1,0 +1,92 @@
+:root {
+  font-family: "Trebuchet MS", "Noto Sans TC", system-ui, sans-serif;
+  color: #173f31;
+  background: #174f35;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  --cream: #fff8d9;
+  --brown: #714021;
+  --deep-green: #174f35;
+  --leaf: #4cae50;
+  --gold: #ffc64b;
+  --shadow: 0 8px 0 rgba(83, 48, 28, 0.2), 0 14px 28px rgba(31, 66, 45, 0.22);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100dvh;
+  overflow: hidden;
+  background: #174f35;
+}
+
+button,
+select,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline: 4px solid #fff;
+  outline-offset: 3px;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+.asset-button {
+  position: relative;
+  display: grid;
+  width: min(100%, 310px);
+  min-height: 60px;
+  place-items: center;
+  border: 0;
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-shadow: 0 2px 2px rgba(68, 40, 20, 0.7);
+  transition: transform 160ms ease;
+}
+
+.asset-button:active {
+  transform: scale(0.96);
+}
+
+.asset-button--secondary {
+  min-height: 54px;
+  font-size: 1rem;
+}
+
+.text-button {
+  min-height: 50px;
+  border: 3px solid #674022;
+  border-radius: 999px;
+  background: #55ae55;
+  color: white;
+  font-weight: 900;
+}

@@ -1,0 +1,56 @@
+.mole-sprite {
+  animation: mole-pop 190ms cubic-bezier(0.18, 0.89, 0.42, 1.35);
+}
+
+.hit-feedback {
+  animation: feedback-pop 620ms ease-out forwards;
+}
+
+.combo-ribbon.is-hot {
+  animation: combo-pulse 520ms ease-in-out infinite alternate;
+}
+
+.can-shake {
+  animation: bomb-shake 260ms ease-in-out;
+}
+
+.overlay-card {
+  animation: card-in 180ms ease-out;
+}
+
+@keyframes mole-pop {
+  from { transform: translateX(-50%) translateY(52%) scale(0.76); }
+  to { transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+@keyframes feedback-pop {
+  0% { opacity: 0; transform: translateX(-50%) scale(0.4); }
+  35% { opacity: 1; transform: translateX(-50%) scale(1.12); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-24px) scale(1); }
+}
+
+@keyframes combo-pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+@keyframes bomb-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-7px); }
+  50% { transform: translateX(7px); }
+  75% { transform: translateX(-4px); }
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
+  scroll-behavior: auto !important;
+  animation-duration: 1ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 1ms !important;
+}
