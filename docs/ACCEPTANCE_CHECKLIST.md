@@ -24,6 +24,6 @@
 - [x] `npm run test`
 - [x] `npm run build`
 - [x] Local browser flow and mobile layout
-- [ ] GitHub repository push
-- [ ] Vercel production deploy
-- [ ] Production URL browser verification
+- [x] GitHub repository push
+- [x] Vercel production deploy
+- [x] Production URL browser verification

@@ -21,3 +21,8 @@ npm run build
 ```
 
 `AGENT.md` is the project execution specification. Supporting design, testing and deployment notes live under `docs/`.
+
+## Production
+
+- GitHub: https://github.com/Chen6005/whack-a-mole-final-v1-1
+- Vercel: https://whackamolefinalcodexpackage.vercel.app
