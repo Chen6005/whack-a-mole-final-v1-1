@@ -31,4 +31,15 @@ describe("game reducer", () => {
     expect(second.score).toBe(25);
     expect(second.activeHoles).toHaveLength(0);
   });
+
+  it("starts a configured level without replacing arcade mode", () => {
+    const state = createInitialState();
+    const levelState = gameReducer(state, { type: "START_LEVEL", levelId: 1, now: 1000 });
+    const arcadeState = gameReducer(levelState, { type: "START_GAME", now: 1100 });
+    expect(levelState.playMode).toBe("level");
+    expect(levelState.levelId).toBe(1);
+    expect(levelState.timeRemaining).toBe(30);
+    expect(arcadeState.playMode).toBe("arcade");
+    expect(arcadeState.levelId).toBeNull();
+  });
 });

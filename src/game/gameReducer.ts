@@ -1,4 +1,5 @@
 import { MODE_SECONDS } from "./gameConfig";
+import { evaluateLevel, getLevel } from "./levels";
 import { calculateHitScore, updateHighScore } from "./scoring";
 import type { EffectType, GameAction, GameState, Settings, TargetType } from "./gameTypes";
 
@@ -11,6 +12,9 @@ const DEFAULT_SETTINGS: Settings = {
 export function createInitialState(highScore = 0, settings: Settings = DEFAULT_SETTINGS): GameState {
   return {
     screen: "home",
+    playMode: "arcade",
+    levelId: null,
+    levelResult: null,
     mode: "normal",
     score: 0,
     highScore,
@@ -22,6 +26,9 @@ export function createInitialState(highScore = 0, settings: Settings = DEFAULT_S
     maxCombo: 0,
     hits: 0,
     misses: 0,
+    goldenHits: 0,
+    bombHits: 0,
+    specialHits: 0,
     multiplierUntil: 0,
     recentHoles: [],
     lastEffect: null,
@@ -40,7 +47,32 @@ function effectTypeFor(targetType: TargetType, combo: number): EffectType {
 
 function finishRound(state: GameState): GameState {
   const highScore = updateHighScore(state.highScore, state.score);
-  return { ...state, screen: "result", isPaused: false, pausedAt: null, activeHoles: [], highScore };
+  const levelConfig = getLevel(state.levelId);
+  const levelResult = state.playMode === "level" && levelConfig ? evaluateLevel(levelConfig, state) : null;
+  return { ...state, screen: "result", isPaused: false, pausedAt: null, activeHoles: [], highScore, levelResult };
+}
+
+function resetRound(state: GameState, timeRemaining: number): GameState {
+  return {
+    ...state,
+    screen: "game",
+    score: 0,
+    timeRemaining,
+    isPaused: false,
+    pausedAt: null,
+    activeHoles: [],
+    combo: 0,
+    maxCombo: 0,
+    hits: 0,
+    misses: 0,
+    goldenHits: 0,
+    bombHits: 0,
+    specialHits: 0,
+    multiplierUntil: 0,
+    recentHoles: [],
+    lastEffect: null,
+    levelResult: null,
+  };
 }
 
 export function gameReducer(state: GameState, action: GameAction): GameState {
@@ -50,22 +82,11 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case "SET_MODE":
       return { ...state, mode: action.mode, timeRemaining: MODE_SECONDS[action.mode] };
     case "START_GAME":
-      return {
-        ...state,
-        screen: "game",
-        score: 0,
-        timeRemaining: MODE_SECONDS[state.mode],
-        isPaused: false,
-        pausedAt: null,
-        activeHoles: [],
-        combo: 0,
-        maxCombo: 0,
-        hits: 0,
-        misses: 0,
-        multiplierUntil: 0,
-        recentHoles: [],
-        lastEffect: null,
-      };
+      return resetRound({ ...state, playMode: "arcade", levelId: null }, MODE_SECONDS[state.mode]);
+    case "START_LEVEL": {
+      const levelConfig = getLevel(action.levelId);
+      return levelConfig ? resetRound({ ...state, playMode: "level", levelId: levelConfig.id }, levelConfig.duration) : state;
+    }
     case "TICK": {
       if (state.screen !== "game" || state.isPaused) return state;
       const activeHoles = state.activeHoles.filter((target) => target.visibleUntil > action.now);
@@ -109,6 +130,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         maxCombo: Math.max(state.maxCombo, result.nextCombo),
         hits: isBomb ? state.hits : state.hits + 1,
         misses: isBomb ? state.misses + 1 : state.misses,
+        goldenHits: target.type === "golden" ? state.goldenHits + 1 : state.goldenHits,
+        bombHits: isBomb ? state.bombHits + 1 : state.bombHits,
+        specialHits: target.type !== "normal" ? state.specialHits + 1 : state.specialHits,
         multiplierUntil,
         shakeId: isBomb ? state.shakeId + 1 : state.shakeId,
         lastEffect: state.effectsEnabled ? { id: action.now, hole: target.hole, type: effectTypeFor(target.type, result.nextCombo), label } : null,

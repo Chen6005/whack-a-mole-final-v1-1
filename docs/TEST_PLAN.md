@@ -15,6 +15,11 @@ Vitest covers:
 - pause target-freeze behavior
 - empty-hole combo reset
 - two-hit shield behavior
+- 30 distinct level definitions and boss stages
+- level speed multiplier layered over original easy-to-frenzy acceleration
+- level goal pass/fail and one-to-three-star calculation
+- no-bomb challenge failure after bomb hit
+- sequential unlock and best-record preservation
 
 ## Local Browser Verification
 
@@ -27,3 +32,13 @@ Vitest covers:
 - Local Storage: high score survives reload
 - 1440x1000 desktop viewport: portrait shell is centered at 540px width
 - Browser errors: none detected
+
+## Level-System Browser Verification
+
+- 390x844 phone viewport: home remains full-height after adding the level entry
+- Level select: 30 cards, initial state has 1 unlocked and 29 locked
+- Level select: `overflow-y: auto`, 2413px scroll content inside an 844px viewport
+- Level 1: target label renders, nine-hole board remains intact
+- Completion: Level 1 earns stars and writes Local Storage progress
+- Unlock: list changes to 2 unlocked and 28 locked cards; Level 1 best score remains visible
+- Arcade regression: original start button still launches gameplay without a level objective

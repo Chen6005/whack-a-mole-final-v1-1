@@ -1,11 +1,13 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { GameScreen } from "./components/GameScreen";
 import { HomeScreen } from "./components/HomeScreen";
+import { LevelSelectScreen } from "./components/LevelSelectScreen";
 import { ResultScreen } from "./components/ResultScreen";
 import { RulesScreen } from "./components/RulesScreen";
 import { SettingsPanel } from "./components/SettingsPanel";
 import { createInitialState, gameReducer } from "./game/gameReducer";
-import { loadHighScore, loadSettings, saveHighScore, saveSettings } from "./game/storage";
+import { updateLevelProgress } from "./game/levels";
+import { loadHighScore, loadLevelProgress, loadSettings, saveHighScore, saveLevelProgress, saveSettings } from "./game/storage";
 import type { ActiveTarget, GameMode, Settings } from "./game/gameTypes";
 import { useGameLoop } from "./hooks/useGameLoop";
 import { useResponsiveScale } from "./hooks/useResponsiveScale";
@@ -16,27 +18,44 @@ import "./styles/animations.css";
 
 export default function App() {
   const [state, dispatch] = useReducer(gameReducer, undefined, () => createInitialState(loadHighScore(), loadSettings()));
+  const [levelProgress, setLevelProgress] = useState(loadLevelProgress);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const processedLevelResult = useRef<string | null>(null);
   const playSound = useSound(state.soundEnabled);
   useResponsiveScale();
   useGameLoop(state, dispatch);
 
   useEffect(() => saveHighScore(state.highScore), [state.highScore]);
+  useEffect(() => saveLevelProgress(levelProgress), [levelProgress]);
   useEffect(() => saveSettings({ soundEnabled: state.soundEnabled, effectsEnabled: state.effectsEnabled, reducedMotion: state.reducedMotion }), [state.effectsEnabled, state.reducedMotion, state.soundEnabled]);
   useEffect(() => {
     document.documentElement.classList.toggle("reduced-motion", state.reducedMotion);
   }, [state.reducedMotion]);
+  useEffect(() => {
+    if (!state.levelResult || state.screen !== "result") return;
+    const resultKey = `${state.levelResult.levelId}:${state.score}:${state.levelResult.stars}:${state.levelResult.passed}`;
+    if (processedLevelResult.current === resultKey) return;
+    processedLevelResult.current = resultKey;
+    setLevelProgress((progress) => updateLevelProgress(progress, state.levelResult!, state.score));
+  }, [state.levelResult, state.score, state.screen]);
 
-  const start = () => {
+  const startArcade = () => {
     playSound("start");
     dispatch({ type: "START_GAME", now: Date.now() });
   };
+  const startLevel = (levelId: number) => {
+    if (levelId > levelProgress.unlockedLevel) return;
+    processedLevelResult.current = null;
+    playSound("start");
+    dispatch({ type: "START_LEVEL", levelId, now: Date.now() });
+  };
+  const restart = () => state.playMode === "level" && state.levelId ? startLevel(state.levelId) : startArcade();
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if ((event.key === "Enter" || event.key === " ") && (state.screen === "home" || state.screen === "result") && !settingsOpen) {
         event.preventDefault();
-        start();
+        restart();
       }
       if (event.key === "Escape" && state.screen === "game") {
         dispatch({ type: state.isPaused ? "RESUME" : "PAUSE", now: Date.now() });
@@ -62,10 +81,11 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      {state.screen === "home" && <HomeScreen mode={state.mode} highScore={state.highScore} onModeChange={setMode} onStart={start} onRules={() => dispatch({ type: "SET_SCREEN", screen: "rules" })} />}
+      {state.screen === "home" && <HomeScreen mode={state.mode} highScore={state.highScore} onModeChange={setMode} onStart={startArcade} onLevels={() => dispatch({ type: "SET_SCREEN", screen: "levels" })} onRules={() => dispatch({ type: "SET_SCREEN", screen: "rules" })} />}
       {state.screen === "rules" && <RulesScreen onHome={home} />}
-      {state.screen === "game" && <GameScreen state={state} onHit={hit} onMiss={miss} onPause={() => dispatch({ type: "PAUSE", now: Date.now() })} onResume={() => dispatch({ type: "RESUME", now: Date.now() })} onRestart={start} onHome={home} />}
-      {state.screen === "result" && <ResultScreen state={state} onRestart={start} onHome={home} onModeChange={setMode} />}
+      {state.screen === "levels" && <LevelSelectScreen progress={levelProgress} onHome={home} onSelect={startLevel} />}
+      {state.screen === "game" && <GameScreen state={state} onHit={hit} onMiss={miss} onPause={() => dispatch({ type: "PAUSE", now: Date.now() })} onResume={() => dispatch({ type: "RESUME", now: Date.now() })} onRestart={restart} onHome={home} />}
+      {state.screen === "result" && <ResultScreen state={state} onRestart={restart} onHome={home} onLevels={() => dispatch({ type: "SET_SCREEN", screen: "levels" })} onNextLevel={startLevel} onModeChange={setMode} />}
       <button className="settings-button" type="button" onClick={() => setSettingsOpen(true)} aria-label="開啟設定">⚙</button>
       {settingsOpen && <SettingsPanel settings={state} onChange={updateSettings} onClose={() => setSettingsOpen(false)} />}
     </div>

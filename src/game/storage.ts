@@ -1,7 +1,9 @@
-import type { Settings } from "./gameTypes";
+import { createDefaultLevelProgress } from "./levels";
+import type { LevelProgress, Settings } from "./gameTypes";
 
 const HIGH_SCORE_KEY = "garden-mole-high-score";
 const SETTINGS_KEY = "garden-mole-settings";
+const LEVEL_PROGRESS_KEY = "garden-mole-level-progress";
 
 export function loadHighScore(): number {
   const value = Number(window.localStorage.getItem(HIGH_SCORE_KEY) ?? 0);
@@ -23,4 +25,16 @@ export function loadSettings(): Settings {
 
 export function saveSettings(settings: Settings): void {
   window.localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+}
+
+export function loadLevelProgress(): LevelProgress {
+  try {
+    return { ...createDefaultLevelProgress(), ...JSON.parse(window.localStorage.getItem(LEVEL_PROGRESS_KEY) ?? "{}") };
+  } catch {
+    return createDefaultLevelProgress();
+  }
+}
+
+export function saveLevelProgress(progress: LevelProgress): void {
+  window.localStorage.setItem(LEVEL_PROGRESS_KEY, JSON.stringify(progress));
 }

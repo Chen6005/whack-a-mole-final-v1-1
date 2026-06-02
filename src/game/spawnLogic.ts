@@ -1,13 +1,14 @@
 import { getDifficulty, TARGET_HP } from "./gameConfig";
+import { getLevel } from "./levels";
 import type { ActiveTarget, GameState, TargetType } from "./gameTypes";
 
 export type RandomSource = () => number;
 
-export function pickTargetType(random: RandomSource = Math.random, specialBoost = 1): TargetType {
+export function pickTargetType(random: RandomSource = Math.random, specialBoost = 1, bombMultiplier = 1): TargetType {
   const roll = random();
   const golden = 0.08 * specialBoost;
   const time = golden + 0.07 * specialBoost;
-  const bomb = time + 0.12 * specialBoost;
+  const bomb = time + 0.12 * specialBoost * bombMultiplier;
   const shield = bomb + 0.13 * specialBoost;
 
   if (roll < golden) return "golden";
@@ -18,7 +19,8 @@ export function pickTargetType(random: RandomSource = Math.random, specialBoost 
 }
 
 export function createSpawnTargets(state: GameState, now: number, random: RandomSource = Math.random): ActiveTarget[] {
-  const config = getDifficulty(state.timeRemaining, state.mode);
+  const levelConfig = getLevel(state.levelId);
+  const config = getDifficulty(state.timeRemaining, state.mode, levelConfig);
   const occupied = new Set(state.activeHoles.filter((target) => target.visibleUntil > now).map((target) => target.hole));
   let available = Array.from({ length: 9 }, (_, index) => index).filter((hole) => !occupied.has(hole));
   const fresh = available.filter((hole) => !state.recentHoles.includes(hole));
@@ -33,7 +35,7 @@ export function createSpawnTargets(state: GameState, now: number, random: Random
   for (let index = 0; index < Math.min(count, remainingCapacity); index += 1) {
     const selectedIndex = Math.floor(random() * available.length);
     const [hole] = available.splice(selectedIndex, 1);
-    const type = pickTargetType(random, config.specialBoost);
+    const type = pickTargetType(random, config.specialBoost, levelConfig?.bombMultiplier);
     targets.push({
       id: now * 10 + index,
       hole,

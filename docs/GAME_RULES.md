@@ -32,3 +32,15 @@ The game becomes faster as time decreases.
 ## End Condition
 
 The game ends when the timer reaches zero.
+
+## Garden Journey Levels
+
+The original arcade modes remain available. Garden Journey adds 30 sequential levels with:
+
+- score, hit-count, Combo, no-bomb, golden-mole and special-target goals
+- level-specific timer, speed and target probability tuning
+- boss challenge levels every five stages
+- one-to-three-star completion ratings
+- sequential unlocking and per-level high scores saved locally
+
+Level speed tuning layers on top of the original in-round acceleration. It does not replace the easy, medium, hard and frenzy phases.

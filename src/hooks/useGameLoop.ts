@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { getDifficulty } from "../game/gameConfig";
+import { getLevel } from "../game/levels";
 import { createSpawnTargets } from "../game/spawnLogic";
 import type { GameAction, GameState } from "../game/gameTypes";
 
@@ -25,7 +26,7 @@ export function useGameLoop(state: GameState, dispatch: React.Dispatch<GameActio
         const latest = stateRef.current;
         dispatch({ type: "SPAWN", targets: createSpawnTargets(latest, Date.now()) });
         queueSpawn();
-      }, getDifficulty(current.timeRemaining, current.mode).spawnMs);
+      }, getDifficulty(current.timeRemaining, current.mode, getLevel(current.levelId)).spawnMs);
     };
 
     queueSpawn();

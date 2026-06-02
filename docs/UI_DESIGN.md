@@ -7,6 +7,7 @@ Cute 3D cartoon arcade garden style.
 ## Screens
 
 - Home
+- Level Select
 - Rules
 - Game
 - Pause
@@ -33,6 +34,7 @@ Cute 3D cartoon arcade garden style.
 - Mobile shell: full viewport height and width
 - Tablet and desktop: portrait game area capped at 540px and centered on a deep-green canvas
 - Result card and rules card: independent vertical scrolling when needed
+- Level select: scrollable two-column touch cards with lock state, stars, score and boss ribbon
 
 ## Visual Feedback
 

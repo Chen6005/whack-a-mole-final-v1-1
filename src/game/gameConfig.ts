@@ -1,4 +1,4 @@
-import type { Difficulty, GameMode, TargetType } from "./gameTypes";
+import type { Difficulty, GameMode, LevelConfig, TargetType } from "./gameTypes";
 
 export const MODE_SECONDS: Record<GameMode, number> = {
   quick: 30,
@@ -37,17 +37,25 @@ export interface DifficultyConfig {
   specialBoost: number;
 }
 
-export function getDifficulty(timeRemaining: number, mode: GameMode): DifficultyConfig {
-  const ratio = timeRemaining / MODE_SECONDS[mode];
+export function getDifficulty(timeRemaining: number, mode: GameMode, levelConfig: LevelConfig | null = null): DifficultyConfig {
+  const ratio = timeRemaining / (levelConfig?.duration ?? MODE_SECONDS[mode]);
+  const speedMultiplier = levelConfig?.speedMultiplier ?? 1;
+  const specialMultiplier = levelConfig?.specialMultiplier ?? 1;
+  const scale = (config: DifficultyConfig): DifficultyConfig => ({
+    ...config,
+    visibleMs: Math.round(config.visibleMs / speedMultiplier),
+    spawnMs: Math.round(config.spawnMs / speedMultiplier),
+    specialBoost: config.specialBoost * specialMultiplier,
+  });
 
   if (ratio <= 0.17) {
-    return { level: "frenzy", visibleMs: 780, spawnMs: 470, maxSimultaneous: 3, multiSpawnChance: 0.6, specialBoost: 1.35 };
+    return scale({ level: "frenzy", visibleMs: 780, spawnMs: 470, maxSimultaneous: 3, multiSpawnChance: 0.6, specialBoost: 1.35 });
   }
   if (ratio <= 0.42) {
-    return { level: "hard", visibleMs: 980, spawnMs: 650, maxSimultaneous: 3, multiSpawnChance: 0.42, specialBoost: 1.2 };
+    return scale({ level: "hard", visibleMs: 980, spawnMs: 650, maxSimultaneous: 3, multiSpawnChance: 0.42, specialBoost: 1.2 });
   }
   if (ratio <= 0.75) {
-    return { level: "medium", visibleMs: 1250, spawnMs: 850, maxSimultaneous: 2, multiSpawnChance: 0.22, specialBoost: 1.05 };
+    return scale({ level: "medium", visibleMs: 1250, spawnMs: 850, maxSimultaneous: 2, multiSpawnChance: 0.22, specialBoost: 1.05 });
   }
-  return { level: "easy", visibleMs: 1450, spawnMs: 1050, maxSimultaneous: 1, multiSpawnChance: 0, specialBoost: 0.9 };
+  return scale({ level: "easy", visibleMs: 1450, spawnMs: 1050, maxSimultaneous: 1, multiSpawnChance: 0, specialBoost: 0.9 });
 }

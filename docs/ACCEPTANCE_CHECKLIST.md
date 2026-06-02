@@ -9,6 +9,9 @@
 - [x] Difficulty progression and multi-target frenzy phase
 - [x] Persistent high score and settings
 - [x] Sound, hit feedback, shake and reduced motion
+- [x] 30-level Garden Journey without replacing arcade mode
+- [x] Sequential level unlock, stars and per-level high scores in Local Storage
+- [x] Original in-round acceleration preserved under level tuning
 
 ## Visuals
 
@@ -16,6 +19,7 @@
 - [x] No placeholder or hotlinked images
 - [x] Phone-first `100dvh` layout without white bars
 - [x] Scrollable rules screen and operable result screen
+- [x] Scrollable mobile level-select screen with touch-friendly locked/unlocked cards
 - [x] Touch-friendly holes and buttons
 
 ## Verification

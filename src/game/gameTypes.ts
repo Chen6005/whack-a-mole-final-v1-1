@@ -1,8 +1,10 @@
 export type GameMode = "quick" | "challenge" | "normal";
-export type Screen = "home" | "rules" | "game" | "result";
+export type Screen = "home" | "rules" | "levels" | "game" | "result";
 export type TargetType = "normal" | "golden" | "time" | "bomb" | "shield";
 export type Difficulty = "easy" | "medium" | "hard" | "frenzy";
 export type EffectType = "hit" | "golden" | "time" | "bomb" | "combo";
+export type PlayMode = "arcade" | "level";
+export type LevelGoalType = "score" | "hits" | "combo" | "noBomb" | "golden" | "special";
 
 export interface ActiveTarget {
   id: number;
@@ -25,8 +27,42 @@ export interface Settings {
   reducedMotion: boolean;
 }
 
+export interface LevelConfig {
+  id: number;
+  name: string;
+  duration: number;
+  goalType: LevelGoalType;
+  goalValue: number;
+  targetScore: number;
+  speedMultiplier: number;
+  specialMultiplier: number;
+  bombMultiplier: number;
+  comboRequirement: number;
+  isBoss: boolean;
+}
+
+export interface LevelResult {
+  levelId: number;
+  passed: boolean;
+  stars: number;
+  goalProgress: number;
+}
+
+export interface LevelRecord {
+  stars: number;
+  highScore: number;
+}
+
+export interface LevelProgress {
+  unlockedLevel: number;
+  records: Record<number, LevelRecord>;
+}
+
 export interface GameState extends Settings {
   screen: Screen;
+  playMode: PlayMode;
+  levelId: number | null;
+  levelResult: LevelResult | null;
   mode: GameMode;
   score: number;
   highScore: number;
@@ -38,6 +74,9 @@ export interface GameState extends Settings {
   maxCombo: number;
   hits: number;
   misses: number;
+  goldenHits: number;
+  bombHits: number;
+  specialHits: number;
   multiplierUntil: number;
   recentHoles: number[];
   lastEffect: HitEffect | null;
@@ -48,6 +87,7 @@ export type GameAction =
   | { type: "SET_SCREEN"; screen: Screen }
   | { type: "SET_MODE"; mode: GameMode }
   | { type: "START_GAME"; now: number }
+  | { type: "START_LEVEL"; levelId: number; now: number }
   | { type: "TICK"; now: number }
   | { type: "SPAWN"; targets: ActiveTarget[] }
   | { type: "HIT_TARGET"; targetId: number; now: number }

@@ -9,10 +9,11 @@ interface HomeScreenProps {
   highScore: number;
   onModeChange: (mode: GameMode) => void;
   onStart: () => void;
+  onLevels: () => void;
   onRules: () => void;
 }
 
-export function HomeScreen({ mode, highScore, onModeChange, onStart, onRules }: HomeScreenProps) {
+export function HomeScreen({ mode, highScore, onModeChange, onStart, onLevels, onRules }: HomeScreenProps) {
   return (
     <main className="screen screen--home">
       <section className="home-card">
@@ -38,6 +39,9 @@ export function HomeScreen({ mode, highScore, onModeChange, onStart, onRules }: 
         </div>
         <button className="asset-button asset-button--primary" style={{ backgroundImage: `url(${startButton})` }} type="button" onClick={onStart}>
           開始遊戲
+        </button>
+        <button className="level-entry-button" type="button" onClick={onLevels}>
+          <span>🗺</span> 關卡挑戰 <small>30 LEVELS</small>
         </button>
         <button className="asset-button asset-button--secondary" style={{ backgroundImage: `url(${rulesButton})` }} type="button" onClick={onRules}>
           遊戲規則

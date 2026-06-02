@@ -120,6 +120,30 @@
   font-size: 0.7rem;
 }
 
+.level-entry-button {
+  display: flex;
+  width: min(100%, 310px);
+  min-height: 50px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin: 2px 0;
+  border: 3px solid #6c4327;
+  border-radius: 999px;
+  background: linear-gradient(#ffd75e, #efa52c);
+  color: #70401f;
+  font-weight: 900;
+  box-shadow: 0 4px 0 #a4612a;
+}
+
+.level-entry-button small {
+  padding: 2px 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+}
+
 .settings-button {
   position: fixed;
   right: max(15px, env(safe-area-inset-right));
@@ -142,6 +166,136 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   background-image: linear-gradient(rgba(255, 251, 222, 0.05), rgba(23, 79, 53, 0.18)), url("../assets/images/rules_background.png");
+}
+
+.screen--levels {
+  padding: max(68px, calc(env(safe-area-inset-top) + 56px)) 12px max(16px, env(safe-area-inset-bottom));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background-image: linear-gradient(rgba(255, 251, 222, 0.04), rgba(23, 79, 53, 0.22)), url("../assets/images/rules_background.png");
+}
+
+.levels-header {
+  margin-bottom: 12px;
+  padding: 14px 16px;
+  border: 3px solid rgba(255, 244, 192, 0.75);
+  border-radius: 22px;
+  background: rgba(255, 250, 224, 0.94);
+  box-shadow: var(--shadow);
+}
+
+.levels-header p {
+  margin-bottom: 2px;
+  color: #d67a2e;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+}
+
+.levels-header h1 {
+  margin: 0;
+  color: #2b6844;
+  font-size: 2rem;
+}
+
+.levels-header span {
+  color: #86663e;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.level-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.level-card {
+  position: relative;
+  display: flex;
+  min-height: 134px;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 11px 10px 9px;
+  overflow: hidden;
+  border: 3px solid #d6b36f;
+  border-radius: 16px;
+  background: rgba(255, 250, 224, 0.96);
+  color: #694826;
+  text-align: left;
+  box-shadow: 0 4px 0 rgba(95, 64, 34, 0.24);
+}
+
+.level-card.is-boss {
+  border-color: #e68830;
+  background: linear-gradient(145deg, rgba(255, 244, 190, 0.98), rgba(255, 218, 128, 0.98));
+}
+
+.level-card.is-locked {
+  border-color: #99a38c;
+  background: rgba(229, 232, 212, 0.93);
+  color: #879080;
+  filter: saturate(0.55);
+}
+
+.level-card__number {
+  color: #d67a2e;
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+
+.level-card strong {
+  margin: 3px 0;
+  font-size: 0.98rem;
+}
+
+.level-card small {
+  color: #927247;
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+
+.level-card__meta {
+  display: flex;
+  width: 100%;
+  align-items: end;
+  justify-content: space-between;
+  gap: 4px;
+  margin-top: auto;
+}
+
+.level-card__meta em {
+  color: #ecaa26;
+  font-size: 0.8rem;
+  font-style: normal;
+  letter-spacing: -0.08em;
+}
+
+.level-card__meta b {
+  color: #85643c;
+  font-size: 0.62rem;
+}
+
+.level-card i {
+  position: absolute;
+  right: -21px;
+  top: 9px;
+  width: 75px;
+  padding: 2px 0;
+  background: #d45332;
+  color: #fff;
+  font-size: 0.56rem;
+  font-style: normal;
+  font-weight: 900;
+  text-align: center;
+  transform: rotate(38deg);
+}
+
+.levels-footer {
+  display: grid;
+  margin-top: 14px;
+  place-items: center;
 }
 
 .rules-card {
@@ -299,6 +453,25 @@
   font-size: 1.05rem;
   text-shadow: 0 2px #8d4d23;
   transition: transform 180ms ease;
+}
+
+.level-objective {
+  display: flex;
+  width: min(100%, 360px);
+  min-height: 27px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 1px 0;
+  border-radius: 999px;
+  background: rgba(255, 248, 217, 0.9);
+  color: #704321;
+  font-size: 0.64rem;
+  box-shadow: 0 2px 0 rgba(73, 55, 30, 0.18);
+}
+
+.level-objective strong {
+  color: #2f774a;
 }
 
 .combo-ribbon img {
@@ -578,6 +751,40 @@
   background: #fff;
   color: #674623;
   font-weight: 900;
+}
+
+.level-result {
+  display: grid;
+  width: 100%;
+  gap: 2px;
+  margin: 8px 0 2px;
+  padding: 8px;
+  justify-items: center;
+  border-radius: 12px;
+  font-weight: 900;
+}
+
+.level-result.is-passed {
+  background: #fff0a9;
+  color: #a96720;
+}
+
+.level-result.is-failed {
+  background: #eee0ca;
+  color: #866b4c;
+}
+
+.level-result span {
+  font-size: 1.05rem;
+}
+
+.result-next-button,
+.result-levels-button {
+  width: min(100%, 310px);
+}
+
+.result-levels-button {
+  background: #3b91a7;
 }
 
 @media (max-height: 680px) {
